@@ -41,6 +41,10 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 20
     }
+}
+
+dependencies {
+    implementation 'jp.co.cyberagent.android:gpuimage:2.1.0'
 }

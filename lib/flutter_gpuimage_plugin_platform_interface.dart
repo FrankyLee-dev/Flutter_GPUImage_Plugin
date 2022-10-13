@@ -26,4 +26,8 @@ abstract class FlutterGpuimagePluginPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<dynamic> setFilter(int filter) {
+    throw UnimplementedError('setFilter() has not been implemented.');
+  }
 }

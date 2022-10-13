@@ -11,7 +11,15 @@ class MethodChannelFlutterGpuimagePlugin extends FlutterGpuimagePluginPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
+  }
+
+  @override
+  Future<dynamic> setFilter(int filter) async {
+    final value = await methodChannel
+        .invokeMethod<dynamic>('setFilter', {"filter": filter});
+    return value;
   }
 }

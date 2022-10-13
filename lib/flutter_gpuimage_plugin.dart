@@ -5,4 +5,8 @@ class FlutterGpuimagePlugin {
   Future<String?> getPlatformVersion() {
     return FlutterGpuimagePluginPlatform.instance.getPlatformVersion();
   }
+
+  Future<dynamic> setFilter(int filter) {
+    return FlutterGpuimagePluginPlatform.instance.setFilter(filter);
+  }
 }

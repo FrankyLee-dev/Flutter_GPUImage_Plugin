@@ -1,6 +1,7 @@
 package com.gpuimage.flutter_gpuimage_plugin
 
 import androidx.annotation.NonNull
+import com.gpuimage.flutter_gpuimage_plugin.factory.FGpuImageFactory
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -16,16 +17,26 @@ class FlutterGpuimagePlugin: FlutterPlugin, MethodCallHandler {
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
 
+  private lateinit var factory: FGpuImageFactory
+
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_gpuimage_plugin")
     channel.setMethodCallHandler(this)
+
+    factory = FGpuImageFactory()
+    flutterPluginBinding.platformViewRegistry.registerViewFactory("com.gpuimageview.FGpuImageView", factory)
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
+    when (call.method) {
+      "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
+      "setFilter" -> {
+        val filter = call.argument<Int>("filter")
+        if (filter != null) {
+          factory.setFilter(filter)
+        }
+      }
+      else -> result.notImplemented()
     }
   }
 
