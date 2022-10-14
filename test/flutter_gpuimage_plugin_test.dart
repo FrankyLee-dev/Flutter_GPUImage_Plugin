@@ -10,6 +10,12 @@ class MockFlutterGpuimagePluginPlatform
 
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future setFilter(int filter) {
+    // TODO: implement setFilter
+    throw UnimplementedError();
+  }
 }
 
 void main() {
