@@ -46,7 +46,8 @@ class TakePictureScreen extends StatefulWidget {
   TakePictureScreenState createState() => TakePictureScreenState();
 }
 
-class TakePictureScreenState extends State<TakePictureScreen> with WidgetsBindingObserver {
+class TakePictureScreenState extends State<TakePictureScreen>
+    with WidgetsBindingObserver {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
 
@@ -110,7 +111,6 @@ class TakePictureScreenState extends State<TakePictureScreen> with WidgetsBindin
     } else if (state == AppLifecycleState.resumed) {
       _onCreateNewController();
     }
-
   }
 
   @override
@@ -127,62 +127,84 @@ class TakePictureScreenState extends State<TakePictureScreen> with WidgetsBindin
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width,
-              child: CameraPreview(
-                _controller,
-                child: Center(
-                  child: Text(
-                    'akkkkkkkkk',
-                    style: TextStyle(color: Colors.blue),
-                  ),
+      body: Stack(
+        children: [
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the Future is complete, display the preview.
+                // final mediaSize = MediaQuery.of(context).size;
+                // final w = mediaSize.width;
+                // final h = mediaSize.height;
+                // final scale = 1 / (_controller.value.aspectRatio * (w / h));
+
+                return Center(child: CameraPreview(_controller));
+              }
+              return Column(children: [CircularProgressIndicator()]);
+            },
+          ),
+          Positioned(
+              top: MediaQuery.of(context).padding.top + 30,
+              right: 25,
+              child: GestureDetector(
+                onTap: changeCamera,
+                child: Icon(
+                  Icons.change_circle_outlined,
+                  size: 35,
+                ),
+              ))
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        // Provide an onPressed callback.
+        onPressed: () async {
+          // Take the Picture in a try / catch block. If anything goes wrong,
+          // catch the error.
+          try {
+            // Ensure that the camera is initialized.
+            await _initializeControllerFuture;
+
+            // Attempt to take a picture and get the file `image`
+            // where it was saved.
+            final image = await _controller.takePicture();
+
+            if (!mounted) return;
+
+            // If the picture was taken, display it on a new screen.
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => DisplayPictureScreen(
+                  // Pass the automatically generated path to
+                  // the DisplayPictureScreen widget.
+                  imagePath: image.path,
                 ),
               ),
             );
-          } else {
-            // Otherwise, display a loading indicator.
-            return Column(children: [CircularProgressIndicator()]);
+          } catch (e) {
+            // If an error occurs, log the error to the console.
+            debugPrint('$e');
           }
         },
+        child: const Icon(Icons.camera_alt),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   // Provide an onPressed callback.
-      //   onPressed: () async {
-      //     // Take the Picture in a try / catch block. If anything goes wrong,
-      //     // catch the error.
-      //     try {
-      //       // Ensure that the camera is initialized.
-      //       await _initializeControllerFuture;
-      //
-      //       // Attempt to take a picture and get the file `image`
-      //       // where it was saved.
-      //       final image = await _controller.takePicture();
-      //
-      //       if (!mounted) return;
-      //
-      //       // If the picture was taken, display it on a new screen.
-      //       await Navigator.of(context).push(
-      //         MaterialPageRoute(
-      //           builder: (context) => DisplayPictureScreen(
-      //             // Pass the automatically generated path to
-      //             // the DisplayPictureScreen widget.
-      //             imagePath: image.path,
-      //           ),
-      //         ),
-      //       );
-      //     } catch (e) {
-      //       // If an error occurs, log the error to the console.
-      //       debugPrint('$e');
-      //     }
-      //   },
-      //   child: const Icon(Icons.camera_alt),
-      // ),
     );
+  }
+}
+
+class _MediaSizeClipper extends CustomClipper<Rect> {
+  final double w;
+  final double h;
+
+  const _MediaSizeClipper(this.w, this.h);
+
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTWH(0, 0, w, h);
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Rect> oldClipper) {
+    return true;
   }
 }
