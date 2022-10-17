@@ -8,9 +8,13 @@
 /// @UpdateUser: frankylee
 /// @UpdateData: 2022/10/14 11:38
 import 'dart:async';
+import 'dart:ffi';
+import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gpuimage_plugin/flutter_gpuimage_plugin.dart';
+import 'package:flutter_gpuimage_plugin/widget/gpu_image_widget.dart';
 
 import 'display_picture.dart';
 
@@ -48,8 +52,10 @@ class TakePictureScreen extends StatefulWidget {
 
 class TakePictureScreenState extends State<TakePictureScreen>
     with WidgetsBindingObserver {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  // late CameraController _controller;
+  // late Future<void> _initializeControllerFuture;
+
+  final _flutterGpuimagePlugin = FlutterGpuimagePlugin();
 
   bool isFront = false;
 
@@ -60,43 +66,54 @@ class TakePictureScreenState extends State<TakePictureScreen>
     // To display the current output from the Camera,
     // create a CameraController.
     debugPrint('cameras.length: ${widget.cameras.length}');
-    _controller = CameraController(
-      // Get a specific camera from the list of available cameras.
-      widget.cameras.first,
-      // Define the resolution to use.
-      ResolutionPreset.max,
-    );
+    // _controller = CameraController(
+    //   // Get a specific camera from the list of available cameras.
+    //   widget.cameras.first,
+    //   // Define the resolution to use.
+    //   ResolutionPreset.max,
+    // );
 
     // Next, initialize the controller. This returns a Future.
-    _initializeControllerFuture = _controller.initialize();
+    // _imageStream();
   }
 
   void changeCamera() {
     debugPrint('changeCamera: $isFront');
-    CameraController controller = CameraController(
-      // Get a specific camera from the list of available cameras.
-      !isFront ? widget.cameras[1] : widget.cameras[0],
-      // Define the resolution to use.
-      ResolutionPreset.max,
-    );
-    _initializeControllerFuture = controller.initialize();
+    // _controller = CameraController(
+    //   // Get a specific camera from the list of available cameras.
+    //   !isFront ? widget.cameras[1] : widget.cameras[0],
+    //   // Define the resolution to use.
+    //   ResolutionPreset.max,
+    // );
+    // _imageStream();
     setState(() {
       isFront = !isFront;
-      _controller = controller;
     });
   }
 
+  // Future<void> _imageStream() async {
+  //   await _controller.initialize();
+  //   _controller.startImageStream((image) {
+  //     List<int> bytes = [];
+  //     for (int i = 0; i < image.planes.length; i++) {
+  //       debugPrint('startImageStream-planes: ${image.planes[i].bytes.length}');
+  //       bytes.addAll(image.planes[i].bytes);
+  //     }
+  //     _flutterGpuimagePlugin.updatePreviewFrame(
+  //         Uint8List.fromList(bytes), image.width, image.height);
+  //   });
+  //   setState(() {});
+  // }
+
   void _onCreateNewController() {
-    CameraController controller = CameraController(
-      // Get a specific camera from the list of available cameras.
-      isFront ? widget.cameras[1] : widget.cameras[0],
-      // Define the resolution to use.
-      ResolutionPreset.max,
-    );
-    _initializeControllerFuture = controller.initialize();
-    setState(() {
-      _controller = controller;
-    });
+    // _controller = CameraController(
+    //   // Get a specific camera from the list of available cameras.
+    //   isFront ? widget.cameras[1] : widget.cameras[0],
+    //   // Define the resolution to use.
+    //   ResolutionPreset.max,
+    // );
+    // _imageStream();
+    // setState(() {});
   }
 
   @override
@@ -106,105 +123,34 @@ class TakePictureScreenState extends State<TakePictureScreen>
     //   return;
     // }
     debugPrint('didChangeAppLifecycleState: $state');
-    if (state == AppLifecycleState.inactive) {
-      _controller.dispose();
-    } else if (state == AppLifecycleState.resumed) {
-      _onCreateNewController();
-    }
+    // if (state == AppLifecycleState.inactive) {
+    //   _controller.stopImageStream();
+    //   _controller.dispose();
+    // } else if (state == AppLifecycleState.resumed) {
+    //   _onCreateNewController();
+    // }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     // Dispose of the controller when the widget is disposed.
-    _controller.dispose();
+    // _controller.stopImageStream();
+    // _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
-      body: Stack(
-        children: [
-          FutureBuilder<void>(
-            future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the Future is complete, display the preview.
-                // final mediaSize = MediaQuery.of(context).size;
-                // final w = mediaSize.width;
-                // final h = mediaSize.height;
-                // final scale = 1 / (_controller.value.aspectRatio * (w / h));
-
-                return Center(child: CameraPreview(_controller));
-              }
-              return Column(children: [CircularProgressIndicator()]);
-            },
-          ),
-          Positioned(
-              top: MediaQuery.of(context).padding.top + 30,
-              right: 25,
-              child: GestureDetector(
-                onTap: changeCamera,
-                child: Icon(
-                  Icons.change_circle_outlined,
-                  size: 35,
-                ),
-              ))
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        // Provide an onPressed callback.
-        onPressed: () async {
-          // Take the Picture in a try / catch block. If anything goes wrong,
-          // catch the error.
-          try {
-            // Ensure that the camera is initialized.
-            await _initializeControllerFuture;
-
-            // Attempt to take a picture and get the file `image`
-            // where it was saved.
-            final image = await _controller.takePicture();
-
-            if (!mounted) return;
-
-            // If the picture was taken, display it on a new screen.
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
-                  imagePath: image.path,
-                ),
-              ),
-            );
-          } catch (e) {
-            // If an error occurs, log the error to the console.
-            debugPrint('$e');
-          }
-        },
-        child: const Icon(Icons.camera_alt),
+      body: Container(
+        margin: EdgeInsets.only(top: 30, bottom: 40),
+        child: const GpuImageWidget(),
       ),
     );
-  }
-}
-
-class _MediaSizeClipper extends CustomClipper<Rect> {
-  final double w;
-  final double h;
-
-  const _MediaSizeClipper(this.w, this.h);
-
-  @override
-  Rect getClip(Size size) {
-    return Rect.fromLTWH(0, 0, w, h);
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Rect> oldClipper) {
-    return true;
   }
 }

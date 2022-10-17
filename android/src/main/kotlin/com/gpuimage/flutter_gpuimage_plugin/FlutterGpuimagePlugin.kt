@@ -1,5 +1,6 @@
 package com.gpuimage.flutter_gpuimage_plugin
 
+import android.util.Log
 import androidx.annotation.NonNull
 import com.gpuimage.flutter_gpuimage_plugin.factory.FGpuImageFactory
 
@@ -8,6 +9,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlin.math.log
 
 /** FlutterGpuimagePlugin */
 class FlutterGpuimagePlugin: FlutterPlugin, MethodCallHandler {
@@ -34,6 +36,17 @@ class FlutterGpuimagePlugin: FlutterPlugin, MethodCallHandler {
         val filter = call.argument<Int>("filter")
         if (filter != null) {
           factory.setFilter(filter)
+        }
+      }
+      "updatePreviewFrame" -> {
+        val width = call.argument<Int>("width")
+        val height = call.argument<Int>("height")
+        val planes = call.argument<ByteArray>("planes")
+//        Log.i("updatePreviewFrame", "onMethodCall: " + width)
+//        Log.i("updatePreviewFrame", "onMethodCall: " + height)
+//        Log.i("updatePreviewFrame", "onMethodCall: " + planes)
+        if (width != null && height != null) {
+          factory.updatePreviewFrame(planes, width, height)
         }
       }
       else -> result.notImplemented()

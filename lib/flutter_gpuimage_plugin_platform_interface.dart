@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_gpuimage_plugin_method_channel.dart';
@@ -29,5 +30,9 @@ abstract class FlutterGpuimagePluginPlatform extends PlatformInterface {
 
   Future<dynamic> setFilter(int filter) {
     throw UnimplementedError('setFilter() has not been implemented.');
+  }
+
+  Future<dynamic> updatePreviewFrame(Uint8List data, int width, int height) {
+    throw UnimplementedError('updatePreviewFrame() has not been implemented.');
   }
 }

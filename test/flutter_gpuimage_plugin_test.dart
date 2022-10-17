@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_gpuimage_plugin/flutter_gpuimage_plugin.dart';
 import 'package:flutter_gpuimage_plugin/flutter_gpuimage_plugin_platform_interface.dart';
@@ -14,6 +16,12 @@ class MockFlutterGpuimagePluginPlatform
   @override
   Future setFilter(int filter) {
     // TODO: implement setFilter
+    throw UnimplementedError();
+  }
+
+  @override
+  Future updatePreviewFrame(Uint8List data, int width, int height) {
+    // TODO: implement updatePreviewFrame
     throw UnimplementedError();
   }
 }

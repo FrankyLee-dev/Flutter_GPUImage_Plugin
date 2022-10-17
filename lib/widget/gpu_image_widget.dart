@@ -12,18 +12,18 @@ import 'package:flutter/services.dart';
 /// @UpdateData: 2022/10/13 11:44
 /// @UpdateRemark: 更新说明
 class GpuImageWidget extends StatelessWidget {
-  const GpuImageWidget({super.key, required this.uri});
+  const GpuImageWidget({super.key, this.uri});
 
-  final String uri;
+  final String? uri;
+
+  // This is used in the platform side to register the view.
+  final String viewType = 'com.gpuimageview.FGpuImageView';
 
   @override
   Widget build(BuildContext context) {
     debugPrint('GpuImageWidget---$uri');
-    // This is used in the platform side to register the view.
-    const String viewType = 'com.gpuimageview.FGpuImageView';
     // Pass parameters to the platform side.
     final Map<String, dynamic> creationParams = <String, dynamic>{"uri": uri};
-
     return AndroidView(
       viewType: viewType,
       layoutDirection: TextDirection.ltr,

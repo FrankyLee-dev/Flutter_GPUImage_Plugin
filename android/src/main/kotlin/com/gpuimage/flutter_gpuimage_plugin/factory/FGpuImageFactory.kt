@@ -31,4 +31,8 @@ class FGpuImageFactory : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     fun setFilter(filter: Int) {
         fGpuImageView.setFilter(filter)
     }
+
+    fun updatePreviewFrame(data : ByteArray? , width: Int, height: Int) {
+        fGpuImageView.updatePreviewFrame(data, width, height)
+    }
 }

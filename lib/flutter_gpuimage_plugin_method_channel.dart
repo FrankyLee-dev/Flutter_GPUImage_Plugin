@@ -22,4 +22,13 @@ class MethodChannelFlutterGpuimagePlugin extends FlutterGpuimagePluginPlatform {
         .invokeMethod<dynamic>('setFilter', {"filter": filter});
     return value;
   }
+
+  @override
+  Future<dynamic> updatePreviewFrame(
+      Uint8List data, int width, int height) async {
+    final value = await methodChannel.invokeMethod<dynamic>(
+        'updatePreviewFrame',
+        {"planes": data, "width": width, "height": height});
+    return value;
+  }
 }
