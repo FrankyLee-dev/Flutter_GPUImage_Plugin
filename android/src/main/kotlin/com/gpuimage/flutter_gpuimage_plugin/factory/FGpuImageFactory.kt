@@ -13,6 +13,8 @@
 package com.gpuimage.flutter_gpuimage_plugin.factory
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.gpuimage.flutter_gpuimage_plugin.nativeview.FGpuImageView
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
@@ -30,9 +32,5 @@ class FGpuImageFactory : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
 
     fun setFilter(filter: Int) {
         fGpuImageView.setFilter(filter)
-    }
-
-    fun updatePreviewFrame(data : ByteArray? , width: Int, height: Int) {
-        fGpuImageView.updatePreviewFrame(data, width, height)
     }
 }

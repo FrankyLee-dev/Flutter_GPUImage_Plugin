@@ -11,8 +11,9 @@ class FlutterGpuimagePlugin {
     return FlutterGpuimagePluginPlatform.instance.setFilter(filter);
   }
 
-  Future<dynamic> updatePreviewFrame(Uint8List data, int width, int height) {
-    return FlutterGpuimagePluginPlatform.instance
-        .updatePreviewFrame(data, width, height);
+  Future<dynamic> setCameraFilter(Map args) {
+    debugPrint('setCameraFilter: $args');
+    return FlutterGpuimagePluginPlatform.instance.setCameraFilter(args);
   }
+
 }

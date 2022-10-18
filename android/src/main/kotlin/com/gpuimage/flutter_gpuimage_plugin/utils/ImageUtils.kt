@@ -10,7 +10,7 @@
  * @UpdateData: 2022/10/17 18:01
  * @UpdateRemark: 更新说明
  */
-package com.gpuimage.flutter_gpuimage_plugin.camera
+package com.gpuimage.flutter_gpuimage_plugin.utils
 
 import android.graphics.ImageFormat
 import android.graphics.Rect

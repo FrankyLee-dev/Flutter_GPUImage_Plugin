@@ -1,173 +1,183 @@
-import 'package:flutter/material.dart';
+/// Copyright (C), 2021-2022, Franky Lee
+/// @ProjectName: flutter_gpuimage_plugin
+/// @Package:
+/// @ClassName: take_photo
+/// @Description:
+/// @Author: frankylee
+/// @CreateDate: 2022/10/14 11:38
+/// @UpdateUser: frankylee
+/// @UpdateData: 2022/10/14 11:38
 import 'dart:async';
-
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gpuimage_plugin/flutter_gpuimage_plugin.dart';
 import 'package:flutter_gpuimage_plugin/widget/gpu_image_widget.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gpuimage_plugin/widget/gpu_camera_widget.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'display_picture.dart';
+
+Future<void> main() async {
+  // Ensure that plugin services are initialized so that `availableCameras()`
+  // can be called before `runApp()`
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    MaterialApp(
+      theme: ThemeData.dark(),
+      home: TakePictureScreen(),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+// A screen that allows users to take a picture using a given camera.
+class TakePictureScreen extends StatefulWidget {
+  const TakePictureScreen({
+    super.key,
+  });
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  TakePictureScreenState createState() => TakePictureScreenState();
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+class TakePictureScreenState extends State<TakePictureScreen>
+    with WidgetsBindingObserver {
+  // late CameraController _controller;
+  // late Future<void> _initializeControllerFuture;
+
   final _flutterGpuimagePlugin = FlutterGpuimagePlugin();
 
-  final ImagePicker _picker = ImagePicker();
+  bool isFront = false;
 
-  String? uri;
-
-  final List<String> _list = [
-    'SepiaToneFilter',
-    'MonochromeFilter',
-    'EmbossFilter',
-    'GrayscaleFilter',
-    'HazeFilter',
-    'BurnBlendFilter'
+  final List<Map> _filters = [
+    {"name": "对比度", "type": "contrast", "contrast": 10},
+    {"name": "反色", "type": "colorInvert"},
+    {"name": "像素化", "type": "pixelation", "pixel": 30},
+    {"name": "色度", "type": "hue", "hue": 10},
+    {"name": "亮度", "type": "brightness", "brightness": 0.5},
+    {"name": "灰度", "type": "grayscale"},
+    {"name": "褐色（怀旧）", "type": "sepia", "sepia": 5},
+    {"name": "饱和度", "type": "saturation", "saturation": 25}
   ];
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    WidgetsBinding.instance.addObserver(this);
+    // To display the current output from the Camera,
+    // create a CameraController.
+    // _controller = CameraController(
+    //   // Get a specific camera from the list of available cameras.
+    //   widget.cameras.first,
+    //   // Define the resolution to use.
+    //   ResolutionPreset.max,
+    // );
+
+    // Next, initialize the controller. This returns a Future.
+    // _imageStream();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion = await _flutterGpuimagePlugin.getPlatformVersion() ??
-          'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
+  void changeCamera() {
+    debugPrint('changeCamera: $isFront');
+    // _controller = CameraController(
+    //   // Get a specific camera from the list of available cameras.
+    //   !isFront ? widget.cameras[1] : widget.cameras[0],
+    //   // Define the resolution to use.
+    //   ResolutionPreset.max,
+    // );
+    // _imageStream();
     setState(() {
-      _platformVersion = platformVersion;
+      isFront = !isFront;
     });
   }
 
-  Widget _buildFilterBtn() {
-    List<Widget> child = [];
-    List.generate(
-        3,
-        (index) => {
-              child.add(Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onTap: () {
-                      _flutterGpuimagePlugin.setFilter(index);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue,
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(_list[index]),
-                    ),
-                  ))),
-            });
-    return Row(
-      children: child,
-    );
+  // Future<void> _imageStream() async {
+  //   await _controller.initialize();
+  //   _controller.startImageStream((image) {
+  //     List<int> bytes = [];
+  //     for (int i = 0; i < image.planes.length; i++) {
+  //       debugPrint('startImageStream-planes: ${image.planes[i].bytes.length}');
+  //       bytes.addAll(image.planes[i].bytes);
+  //     }
+  //     _flutterGpuimagePlugin.updatePreviewFrame(
+  //         Uint8List.fromList(bytes), image.width, image.height);
+  //   });
+  //   setState(() {});
+  // }
+
+  void _onCreateNewController() {
+    // _controller = CameraController(
+    //   // Get a specific camera from the list of available cameras.
+    //   isFront ? widget.cameras[1] : widget.cameras[0],
+    //   // Define the resolution to use.
+    //   ResolutionPreset.max,
+    // );
+    // _imageStream();
+    // setState(() {});
   }
 
-  Widget _buildFilterBtn2() {
-    List<Widget> child = [];
-    List.generate(
-        3,
-        (index) => {
-              child.add(Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onTap: () {
-                      _flutterGpuimagePlugin.setFilter(index + 3);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue,
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(_list[index + 3]),
-                    ),
-                  ))),
-            });
-    return Row(
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // debugPrint('didChangeAppLifecycleState: ${_controller.value.isInitialized}');
+    // if (_controller.value.isInitialized) {
+    //   return;
+    // }
+    debugPrint('didChangeAppLifecycleState: $state');
+    // if (state == AppLifecycleState.inactive) {
+    //   _controller.stopImageStream();
+    //   _controller.dispose();
+    // } else if (state == AppLifecycleState.resumed) {
+    //   _onCreateNewController();
+    // }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    // Dispose of the controller when the widget is disposed.
+    // _controller.stopImageStream();
+    // _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildFilterSelector() {
+    List<Widget> child = _filters
+        .map((e) => GestureDetector(
+              onTap: () {
+                _flutterGpuimagePlugin.setCameraFilter(e);
+              },
+              child: Container(
+                height: 40,
+                width: 120,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.blue),
+                child: Text(e["name"]),
+              ),
+            ))
+        .toList();
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
       children: child,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('GPU Image Filter'),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: Container(
-                  margin: EdgeInsets.all(20),
-                  child: uri != null
-                      ? GpuImageWidget(uri: uri!)
-                      : const Text('加载中...')),
-            ),
-            Padding(padding: EdgeInsets.only(top: 20)),
-            GestureDetector(
-              onTap: () async {
-                final XFile? image =
-                    await _picker.pickImage(source: ImageSource.gallery);
-                debugPrint('image: ${image?.name}');
-                debugPrint('image: ${image?.path}');
-                setState(() {
-                  uri = image?.path;
-                  // uri = 'http://pic1.win4000.com/mobile/0/55837b9844216.jpg';
-                });
-              },
-              child: Container(
-                alignment: Alignment.center,
-                height: 40,
-                color: Colors.blue,
-                child: Text('fetch image'),
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(top: 20)),
-            _buildFilterBtn(),
-            Padding(padding: EdgeInsets.only(top: 10)),
-            _buildFilterBtn2(),
-            Padding(padding: EdgeInsets.only(top: 20)),
-          ],
-        ),
-        // floatingActionButton: FloatingActionButton(onPressed: () async {
-        //   // final XFile? image =
-        //   //     await _picker.pickImage(source: ImageSource.gallery);
-        //   // debugPrint('image: ${image?.name}');
-        //   // debugPrint('image: ${image?.path}');
-        //   setState(() {
-        //     // uri = image?.path;
-        //     uri = 'http://pic1.win4000.com/mobile/0/55837b9844216.jpg';
-        //   });
-        // }),
+    return Scaffold(
+      // You must wait until the controller is initialized before displaying the
+      // camera preview. Use a FutureBuilder to display a loading spinner until the
+      // controller has finished initializing.
+      body: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.width,
+            width: MediaQuery.of(context).size.width,
+            child: const GpuCameraWidget(),
+          ),
+          Padding(padding: EdgeInsets.only(top: 20)),
+          _buildFilterSelector()
+        ],
       ),
     );
   }

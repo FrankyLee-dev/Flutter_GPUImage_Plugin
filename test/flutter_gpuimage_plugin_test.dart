@@ -20,10 +20,11 @@ class MockFlutterGpuimagePluginPlatform
   }
 
   @override
-  Future updatePreviewFrame(Uint8List data, int width, int height) {
-    // TODO: implement updatePreviewFrame
+  Future setCameraFilter(Map args) {
+    // TODO: implement setCameraFilter
     throw UnimplementedError();
   }
+
 }
 
 void main() {

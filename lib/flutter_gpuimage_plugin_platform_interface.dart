@@ -32,7 +32,8 @@ abstract class FlutterGpuimagePluginPlatform extends PlatformInterface {
     throw UnimplementedError('setFilter() has not been implemented.');
   }
 
-  Future<dynamic> updatePreviewFrame(Uint8List data, int width, int height) {
-    throw UnimplementedError('updatePreviewFrame() has not been implemented.');
+  Future<dynamic> setCameraFilter(Map args) {
+    throw UnimplementedError('setCameraFilter() has not been implemented.');
   }
+
 }
