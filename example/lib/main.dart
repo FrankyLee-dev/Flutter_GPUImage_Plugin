@@ -46,16 +46,20 @@ class TakePictureScreenState extends State<TakePictureScreen>
   final _flutterGpuimagePlugin = FlutterGpuimagePlugin();
 
   bool isFront = false;
+  int as = 0;
+
+  double contrast = 1.2;
+  double brightness = 0.0;
+  double saturation = 1.0;
 
   final List<Map> _filters = [
-    {"name": "对比度", "type": "contrast", "contrast": 10},
+    // {"name": "对比度", "type": "contrast", "contrast": 10},
     {"name": "反色", "type": "colorInvert"},
     {"name": "像素化", "type": "pixelation", "pixel": 30},
-    {"name": "色度", "type": "hue", "hue": 10},
-    {"name": "亮度", "type": "brightness", "brightness": 0.5},
+    // {"name": "亮度", "type": "brightness", "brightness": 0.5},
     {"name": "灰度", "type": "grayscale"},
     {"name": "褐色（怀旧）", "type": "sepia", "sepia": 5},
-    {"name": "饱和度", "type": "saturation", "saturation": 25}
+    // {"name": "饱和度", "type": "saturation", "saturation": 25}
   ];
 
   @override
@@ -162,21 +166,122 @@ class TakePictureScreenState extends State<TakePictureScreen>
     );
   }
 
+  Widget _buildValueSelect() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            const Text('对比度'),
+            Expanded(
+                child: Slider(
+                    value: contrast,
+                    min: 1.2,
+                    max: 2,
+                    onChanged: (value) {
+                      setState(() {
+                        contrast = value;
+                        _flutterGpuimagePlugin.setCameraContrast(
+                            {"type": "contrast", "contrast": value});
+                      });
+                    }))
+          ],
+        ),
+        Padding(padding: EdgeInsets.only(top: 10)),
+        Row(
+          children: [
+            const Text('亮度'),
+            Expanded(
+                child: Slider(
+                    value: brightness,
+                    min: 0.0,
+                    max: 1.0,
+                    onChanged: (value) {
+                      setState(() {
+                        brightness = value;
+                        _flutterGpuimagePlugin.setCameraBrightness(
+                            {"type": "brightness", "brightness": value});
+                      });
+                    })),
+          ],
+        ),
+        Padding(padding: EdgeInsets.only(top: 10)),
+        Row(
+          children: [
+            const Text('饱和度'),
+            Expanded(
+                child: Slider(
+                    value: saturation,
+                    min: 1.0,
+                    max: 10.0,
+                    onChanged: (value) {
+                      setState(() {
+                        saturation = value;
+                        _flutterGpuimagePlugin.setCameraSaturation(
+                            {"type": "saturation", "saturation": value});
+                      });
+                    })),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
-      body: Column(
+      body: Stack(
         children: [
-          Container(
-            height: MediaQuery.of(context).size.width,
-            width: MediaQuery.of(context).size.width,
-            child: const GpuCameraWidget(),
+          Column(
+            children: [
+              Container(
+                height: 4 / 3 * MediaQuery.of(context).size.width,
+                width: MediaQuery.of(context).size.width,
+                child: const GpuCameraWidget(),
+              ),
+              Padding(padding: EdgeInsets.only(top: 20)),
+              _buildFilterSelector(),
+              Padding(padding: EdgeInsets.only(top: 20)),
+              _buildValueSelect(),
+            ],
           ),
-          Padding(padding: EdgeInsets.only(top: 20)),
-          _buildFilterSelector()
+          Positioned(
+              top: MediaQuery.of(context).padding.top + 20,
+              right: 0,
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      isFront = !isFront;
+                      _flutterGpuimagePlugin.switchCamera(isFront ? 1 : 0);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
+                      child: const Icon(
+                        Icons.cameraswitch_outlined,
+                        size: 35,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      as = as == 0 ? 1 : 0;
+                      _flutterGpuimagePlugin.switchAspectRatio(as);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
+                      child: const Icon(
+                        Icons.aspect_ratio,
+                        size: 35,
+                      ),
+                    ),
+                  )
+                ],
+              ))
         ],
       ),
     );

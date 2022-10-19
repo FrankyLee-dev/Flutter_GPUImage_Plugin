@@ -28,12 +28,35 @@ abstract class FlutterGpuimagePluginPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
+  Future<dynamic> switchCamera(int front) {
+    throw UnimplementedError('switchCamera() has not been implemented.');
+  }
+
+  Future<dynamic> switchAspectRatio(int ar) {
+    throw UnimplementedError('switchAspectRatio() has not been implemented.');
+  }
+
   Future<dynamic> setFilter(int filter) {
     throw UnimplementedError('setFilter() has not been implemented.');
   }
 
   Future<dynamic> setCameraFilter(Map args) {
     throw UnimplementedError('setCameraFilter() has not been implemented.');
+  }
+
+  /// 设置对比度
+  Future<dynamic> setCameraContrast(Map args) {
+    throw UnimplementedError('setCameraContrast() has not been implemented.');
+  }
+
+  /// 设置亮度
+  Future<dynamic> setCameraBrightness(Map args) {
+    throw UnimplementedError('setCameraBrightness() has not been implemented.');
+  }
+
+  /// 设置饱和度
+  Future<dynamic> setCameraSaturation(Map args) {
+    throw UnimplementedError('setCameraSaturation() has not been implemented.');
   }
 
 }

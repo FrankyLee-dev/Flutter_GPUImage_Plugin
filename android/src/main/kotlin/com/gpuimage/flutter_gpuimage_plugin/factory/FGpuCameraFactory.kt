@@ -38,8 +38,28 @@ class FGpuCameraFactory : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
         return fGpuCameraView
     }
 
+    fun switchCamera(value: Int?) {
+        fGpuCameraView.switchCamera(value)
+    }
+
+    fun switchAspectRatio(value: Int?) {
+        fGpuCameraView.switchAspectRatio(value)
+    }
+
     fun setFilter(arguments: Map<*, *>) {
         fGpuCameraView.setFilter(arguments)
+    }
+
+    fun setCameraContrast(arguments: Map<*, *>) {
+        fGpuCameraView.setCameraContrast(arguments)
+    }
+
+    fun setCameraBrightness(arguments: Map<*, *>) {
+        fGpuCameraView.setCameraBrightness(arguments)
+    }
+
+    fun setCameraSaturation(arguments: Map<*, *>) {
+        fGpuCameraView.setCameraSaturation(arguments)
     }
 
 }

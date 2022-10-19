@@ -25,6 +25,37 @@ class MockFlutterGpuimagePluginPlatform
     throw UnimplementedError();
   }
 
+  @override
+  Future setCameraBrightness(Map<dynamic, dynamic> args) {
+    // TODO: implement setCameraBrightness
+    throw UnimplementedError();
+  }
+
+  @override
+  Future setCameraContrast(Map<dynamic, dynamic> args) {
+    // TODO: implement setCameraContrast
+    throw UnimplementedError();
+  }
+
+  @override
+  Future setCameraSaturation(Map<dynamic, dynamic> args) {
+    // TODO: implement setCameraSaturation
+    throw UnimplementedError();
+  }
+
+  @override
+  Future switchCamera(int front) {
+    // TODO: implement switchCamera
+    throw UnimplementedError();
+  }
+
+  @override
+  Future switchAspectRatio(int ar) {
+    // TODO: implement switchAspectRatio
+    throw UnimplementedError();
+  }
+
+
 }
 
 void main() {

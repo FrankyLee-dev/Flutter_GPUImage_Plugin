@@ -44,9 +44,29 @@ class FlutterGpuimagePlugin: FlutterPlugin, MethodCallHandler {
           fGpuImageFactory.setFilter(filter)
         }
       }
+      "switchCamera" -> {
+        val value = call.argument<Int>("front")
+        fGpuCameraFactory.switchCamera(value)
+      }
+      "switchAspectRatio" -> {
+        val value = call.argument<Int>("aspectRatio")
+        fGpuCameraFactory.switchAspectRatio(value)
+      }
       "setCameraFilter" -> {
         val args = call.arguments as Map<*, *>
         fGpuCameraFactory.setFilter(args)
+      }
+      "setCameraContrast" -> {
+        val args = call.arguments as Map<*, *>
+        fGpuCameraFactory.setCameraContrast(args)
+      }
+      "setCameraBrightness" -> {
+        val args = call.arguments as Map<*, *>
+        fGpuCameraFactory.setCameraBrightness(args)
+      }
+      "setCameraSaturation" -> {
+        val args = call.arguments as Map<*, *>
+        fGpuCameraFactory.setCameraSaturation(args)
       }
       else -> result.notImplemented()
     }
