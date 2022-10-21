@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_gpuimage_plugin_method_channel.dart';
@@ -28,35 +27,22 @@ abstract class FlutterGpuimagePluginPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<dynamic> switchCamera(int front) {
-    throw UnimplementedError('switchCamera() has not been implemented.');
-  }
-
-  Future<dynamic> switchAspectRatio(int ar) {
-    throw UnimplementedError('switchAspectRatio() has not been implemented.');
-  }
-
-  Future<dynamic> setFilter(int filter) {
-    throw UnimplementedError('setFilter() has not been implemented.');
-  }
-
-  Future<dynamic> setCameraFilter(Map args) {
-    throw UnimplementedError('setCameraFilter() has not been implemented.');
+  Future<dynamic> setImageFilter(Map args) {
+    throw UnimplementedError('setImageFilter() has not been implemented.');
   }
 
   /// 设置对比度
-  Future<dynamic> setCameraContrast(Map args) {
-    throw UnimplementedError('setCameraContrast() has not been implemented.');
+  Future<dynamic> setImageContrast(Map args) {
+    throw UnimplementedError('setImageContrast() has not been implemented.');
   }
 
   /// 设置亮度
-  Future<dynamic> setCameraBrightness(Map args) {
-    throw UnimplementedError('setCameraBrightness() has not been implemented.');
+  Future<dynamic> setImageBrightness(Map args) {
+    throw UnimplementedError('setImageBrightness() has not been implemented.');
   }
 
   /// 设置饱和度
-  Future<dynamic> setCameraSaturation(Map args) {
-    throw UnimplementedError('setCameraSaturation() has not been implemented.');
+  Future<dynamic> setImageSaturation(Map args) {
+    throw UnimplementedError('setImageSaturation() has not been implemented.');
   }
-
 }

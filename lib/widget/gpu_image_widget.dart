@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import '../controller/gpu_image_controller.dart';
 
 /// Copyright (C), 2021-2022, Franky Lee
 /// @ProjectName: flutter_gpuimage_plugin
@@ -11,24 +12,22 @@ import 'package:flutter/services.dart';
 /// @UpdateUser: frankylee
 /// @UpdateData: 2022/10/13 11:44
 /// @UpdateRemark: 更新说明
+///
+
 class GpuImageWidget extends StatelessWidget {
-  const GpuImageWidget({super.key, this.uri});
+  const GpuImageWidget(
+      {super.key, required this.imageController, this.creationParams});
 
-  final String? uri;
+  final GpuImageController imageController;
 
-  // This is used in the platform side to register the view.
-  final String viewType = 'com.gpuimageview.FGpuImageView';
+  final Map<String, dynamic>? creationParams;
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('GpuImageWidget---$uri');
-    // Pass parameters to the platform side.
-    final Map<String, dynamic> creationParams = <String, dynamic>{"uri": uri};
-    return AndroidView(
-      viewType: viewType,
-      layoutDirection: TextDirection.ltr,
-      creationParams: creationParams,
-      creationParamsCodec: const StandardMessageCodec(),
-    );
+    return ValueListenableBuilder(
+        valueListenable: imageController,
+        builder: (BuildContext context, Object? value, Widget? child) {
+          return imageController.buildPreview(creationParams);
+        });
   }
 }

@@ -14,47 +14,28 @@ class MockFlutterGpuimagePluginPlatform
   Future<String?> getPlatformVersion() => Future.value('42');
 
   @override
-  Future setFilter(int filter) {
-    // TODO: implement setFilter
+  Future setImageBrightness(Map<dynamic, dynamic> args) {
+    // TODO: implement setImageBrightness
     throw UnimplementedError();
   }
 
   @override
-  Future setCameraFilter(Map args) {
-    // TODO: implement setCameraFilter
+  Future setImageContrast(Map<dynamic, dynamic> args) {
+    // TODO: implement setImageContrast
     throw UnimplementedError();
   }
 
   @override
-  Future setCameraBrightness(Map<dynamic, dynamic> args) {
-    // TODO: implement setCameraBrightness
+  Future setImageFilter(Map<dynamic, dynamic> args) {
+    // TODO: implement setImageFilter
     throw UnimplementedError();
   }
 
   @override
-  Future setCameraContrast(Map<dynamic, dynamic> args) {
-    // TODO: implement setCameraContrast
+  Future setImageSaturation(Map<dynamic, dynamic> args) {
+    // TODO: implement setImageSaturation
     throw UnimplementedError();
   }
-
-  @override
-  Future setCameraSaturation(Map<dynamic, dynamic> args) {
-    // TODO: implement setCameraSaturation
-    throw UnimplementedError();
-  }
-
-  @override
-  Future switchCamera(int front) {
-    // TODO: implement switchCamera
-    throw UnimplementedError();
-  }
-
-  @override
-  Future switchAspectRatio(int ar) {
-    // TODO: implement switchAspectRatio
-    throw UnimplementedError();
-  }
-
 
 }
 

@@ -3,7 +3,6 @@ package com.gpuimage.flutter_gpuimage_plugin
 import android.os.Build
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
-import com.gpuimage.flutter_gpuimage_plugin.factory.FGpuCameraFactory
 import com.gpuimage.flutter_gpuimage_plugin.factory.FGpuImageFactory
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -21,7 +20,6 @@ class FlutterGpuimagePlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
 
   private lateinit var fGpuImageFactory: FGpuImageFactory
-  private lateinit var fGpuCameraFactory: FGpuCameraFactory
 
   @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -30,43 +28,27 @@ class FlutterGpuimagePlugin: FlutterPlugin, MethodCallHandler {
 
     fGpuImageFactory = FGpuImageFactory()
     flutterPluginBinding.platformViewRegistry.registerViewFactory("com.gpuimageview.FGpuImageView", fGpuImageFactory)
-    fGpuCameraFactory = FGpuCameraFactory()
-    flutterPluginBinding.platformViewRegistry.registerViewFactory("com.gpuimageview.FGpuCameraView", fGpuCameraFactory)
   }
 
   @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
-      "setFilter" -> {
-        val filter = call.argument<Int>("filter")
-        if (filter != null) {
-          fGpuImageFactory.setFilter(filter)
-        }
-      }
-      "switchCamera" -> {
-        val value = call.argument<Int>("front")
-        fGpuCameraFactory.switchCamera(value)
-      }
-      "switchAspectRatio" -> {
-        val value = call.argument<Int>("aspectRatio")
-        fGpuCameraFactory.switchAspectRatio(value)
-      }
-      "setCameraFilter" -> {
+      "setImageFilter" -> {
         val args = call.arguments as Map<*, *>
-        fGpuCameraFactory.setFilter(args)
+        fGpuImageFactory.setImageFilter(args)
       }
-      "setCameraContrast" -> {
+      "setImageContrast" -> {
         val args = call.arguments as Map<*, *>
-        fGpuCameraFactory.setCameraContrast(args)
+        fGpuImageFactory.setCameraContrast(args)
       }
-      "setCameraBrightness" -> {
+      "setImageBrightness" -> {
         val args = call.arguments as Map<*, *>
-        fGpuCameraFactory.setCameraBrightness(args)
+        fGpuImageFactory.setCameraBrightness(args)
       }
-      "setCameraSaturation" -> {
+      "setImageSaturation" -> {
         val args = call.arguments as Map<*, *>
-        fGpuCameraFactory.setCameraSaturation(args)
+        fGpuImageFactory.setCameraSaturation(args)
       }
       else -> result.notImplemented()
     }

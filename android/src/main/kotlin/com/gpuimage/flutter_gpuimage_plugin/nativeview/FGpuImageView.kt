@@ -16,13 +16,22 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.View
+import com.gpuimage.flutter_gpuimage_plugin.utils.FilterTools
 import io.flutter.plugin.platform.PlatformView
 import jp.co.cyberagent.android.gpuimage.GPUImageView
 import jp.co.cyberagent.android.gpuimage.filter.*
+import jp.co.cyberagent.android.gpuimage.util.Rotation
 
-internal class FGpuImageView(context: Context, id: Int, creationParams: Map<String?, Any?>?) : PlatformView {
+internal class FGpuImageView(context: Context, id: Int, creationParams: Map<String?, Any?>?) :
+    PlatformView {
 
     private val gpuImageView: GPUImageView
+
+    private var currentFilter: GPUImageFilter? = null
+
+    private var contrast: GPUImageFilter? = null
+    private var brightness: GPUImageFilter? = null
+    private var saturation: GPUImageFilter? = null
 
     override fun getView(): View {
         return gpuImageView
@@ -42,22 +51,59 @@ internal class FGpuImageView(context: Context, id: Int, creationParams: Map<Stri
         if (creationParams != null) {
             // 图片显示
             val u = creationParams["uri"] as String?
+            val isFront = creationParams["isFront"] as Boolean
             if (u != null) {
+                if (isFront) {
+                    gpuImageView.gpuImage.setRotation(Rotation.NORMAL, true, false)
+                }
                 gpuImageView.setImage(getCompressBitmap(u)) // this loads image on the current thread, should be run in a thread
             }
         }
     }
 
     // 设置滤镜
-    fun setFilter(filter: Int) {
-        when (filter) {
-            0 -> gpuImageView.filter = GPUImageSepiaToneFilter()
-            1 -> gpuImageView.filter = GPUImageMonochromeFilter()
-            2 -> gpuImageView.filter = GPUImageEmbossFilter()
-            3 -> gpuImageView.filter = GPUImageGrayscaleFilter()
-            4 -> gpuImageView.filter = GPUImageHazeFilter()
-            5-> gpuImageView.filter = GPUImageColorBurnBlendFilter()
+    fun setImageFilter(arguments: Map<*, *>) {
+        val filter = FilterTools.generateFilter(arguments)
+        currentFilter = filter
+        setGroupFilter()
+    }
+
+    // 设置对比度
+    fun setImageContrast(arguments: Map<*, *>) {
+        val filter = FilterTools.generateFilter(arguments)
+        contrast = filter
+        setGroupFilter()
+    }
+
+    // 设置亮度
+    fun setImageBrightness(arguments: Map<*, *>) {
+        val filter = FilterTools.generateFilter(arguments)
+        brightness = filter
+        setGroupFilter()
+    }
+
+    // 设置饱和度
+    fun setImageSaturation(arguments: Map<*, *>) {
+        val filter = FilterTools.generateFilter(arguments)
+        saturation = filter
+        setGroupFilter()
+    }
+
+    private fun setGroupFilter() {
+        val list = mutableListOf<GPUImageFilter>()
+        if (currentFilter != null) {
+            list.add(currentFilter!!)
         }
+        if (contrast != null) {
+            list.add(contrast!!)
+        }
+        if (brightness != null) {
+            list.add(brightness!!)
+        }
+        if (saturation != null) {
+            list.add(saturation!!)
+        }
+        gpuImageView.filter = GPUImageFilterGroup(list)
     }
 
 }

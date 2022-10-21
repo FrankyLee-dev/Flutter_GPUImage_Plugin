@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gpuimage_plugin/flutter_gpuimage_plugin.dart';
+import 'package:flutter_gpuimage_plugin/controller/gpu_image_controller.dart';
 import 'package:flutter_gpuimage_plugin/widget/gpu_image_widget.dart';
 
 /// Copyright (C), 2021-2022, Franky Lee
@@ -16,22 +14,25 @@ import 'package:flutter_gpuimage_plugin/widget/gpu_image_widget.dart';
 class DisplayPictureScreen extends StatefulWidget {
   final String imagePath;
 
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  final bool isFront;
+
+  const DisplayPictureScreen(
+      {super.key, required this.imagePath, required this.isFront});
 
   @override
   DisplayPictureScreenState createState() => DisplayPictureScreenState();
 }
 
 class DisplayPictureScreenState extends State<DisplayPictureScreen> {
-  final _flutterGpuimagePlugin = FlutterGpuimagePlugin();
+  final GpuImageController _gpuImageController = GpuImageController();
 
-  final List<String> _list = [
-    'SepiaToneFilter',
-    'MonochromeFilter',
-    'EmbossFilter',
-    'GrayscaleFilter',
-    'HazeFilter',
-    'BurnBlendFilter'
+  final List<Map> _list = [
+    {"type": "colorInvert"},
+    {"type": "pixelation", "pixel": 30},
+    {"type": "grayscale"},
+    {"type": "sepia", "sepia": 15},
+    {"type": "sharpen", "sharpen": 25},
+    {"type": "transformOperation"}
   ];
 
   @override
@@ -40,54 +41,24 @@ class DisplayPictureScreenState extends State<DisplayPictureScreen> {
   }
 
   Widget _buildFilterBtn() {
-    List<Widget> child = [];
-    List.generate(
-        3,
-        (index) => {
-              child.add(Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onTap: () {
-                      _flutterGpuimagePlugin.setFilter(index);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue,
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(_list[index]),
-                    ),
-                  ))),
-            });
-    return Row(
-      children: child,
-    );
-  }
-
-  Widget _buildFilterBtn2() {
-    List<Widget> child = [];
-    List.generate(
-        3,
-        (index) => {
-              child.add(Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onTap: () {
-                      _flutterGpuimagePlugin.setFilter(index + 3);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue,
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(_list[index + 3]),
-                    ),
-                  ))),
-            });
+    List<Widget> child = _list
+        .map((e) => Expanded(
+            flex: 1,
+            child: GestureDetector(
+              onTap: () {
+                _gpuImageController.setImageFilter(e);
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.blue,
+                ),
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Text(e["type"]),
+              ),
+            )))
+        .toList();
     return Row(
       children: child,
     );
@@ -101,16 +72,18 @@ class DisplayPictureScreenState extends State<DisplayPictureScreen> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: Container(
-                margin: EdgeInsets.all(20),
-                child: GpuImageWidget(uri: widget.imagePath)),
-          ),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              height: 4 / 3 * MediaQuery.of(context).size.width,
+              child: GpuImageWidget(
+                  imageController: _gpuImageController,
+                  creationParams: {
+                    "uri": widget.imagePath,
+                    "isFront": widget.isFront
+                  })),
           Padding(padding: EdgeInsets.only(top: 20)),
           _buildFilterBtn(),
           Padding(padding: EdgeInsets.only(top: 10)),
-          _buildFilterBtn2(),
-          Padding(padding: EdgeInsets.only(top: 20)),
         ],
       ),
     );

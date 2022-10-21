@@ -30,7 +30,19 @@ class FGpuImageFactory : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
         return fGpuImageView
     }
 
-    fun setFilter(filter: Int) {
-        fGpuImageView.setFilter(filter)
+    fun setImageFilter(arguments: Map<*, *>) {
+        fGpuImageView.setImageFilter(arguments)
+    }
+
+    fun setCameraContrast(arguments: Map<*, *>) {
+        fGpuImageView.setImageContrast(arguments)
+    }
+
+    fun setCameraBrightness(arguments: Map<*, *>) {
+        fGpuImageView.setImageBrightness(arguments)
+    }
+
+    fun setCameraSaturation(arguments: Map<*, *>) {
+        fGpuImageView.setImageSaturation(arguments)
     }
 }
